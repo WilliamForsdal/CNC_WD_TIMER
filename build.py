@@ -18,15 +18,16 @@ def main():
     # ./main.asm                which file to compile
 
  
-        file = f"./main.asm"
+    for target in ["main"]:
+        file = f"./{target}.asm"
         args = " ".join([
             "-mcpu=12F508",
-            f"-o\"obj/main.hex\"",
+            f"-o\"obj/{target}.hex\"",
             "-xassembler-with-cpp",
             "-Xlinker",
-            "-PrstVector=0",
+            "-prstVector=0",
             "-Xlinker",
-            "-Pmain=2",
+            "-pcode=2",
             file,
         ])
         call = f"{'pic-as.exe'} {args}"
