@@ -19,7 +19,7 @@ reset_vector:
 psect code, delta=2
 main:
     ; clear T0CS bit of OPTION reg to enable it as a GPIO
-    movlw       0b11011111
+    movlw       0b11010001
     option      
     ; init gpio
     movlw       0b111000 ; 0, 1, and 2 are outputs
@@ -27,10 +27,30 @@ main:
     goto        main_loop
 
 main_loop:
-    bsf         GPIO, 2
+    btfsc       GPIO, 2
+    goto        main_loop_off
+    goto        main_loop_on
 
+
+main_loop_on:
+    bsf         GPIO, 2
+    goto        main_loop_delay
+main_loop_off:
     bcf         GPIO, 2
+    goto        main_loop_delay
     
+
+main_loop_delay:
+    movlw       9
+    movwf       0x10 ; reg 0x10
+
+main_loop_on_loop:
+    decfsz      0x10, f
+    goto        main_loop_on_loop
+    goto        main_loop_end
+    
+main_loop_end:
+    nop 
     goto        main_loop
 
 
